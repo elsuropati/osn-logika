@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metode Pembuktian — Bimbingan OSN Matematika</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600&family=Sora:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8fb;--card:#fff;--ink:#16203a;--mute:#5b6580;--line:#dde2ee;--ac:#0f766e;--acbg:#e0f2f0;--ok:#15803d;--okbg:#dcfce7;--no:#b91c1c;--nobg:#fee2e2;--hl:#fef3c7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#172038;--ink:#e8ecf7;--mute:#9aa5c4;--line:#2a3554;--ac:#5eead4;--acbg:#12343a;--ok:#4ade80;--okbg:#12351f;--no:#f87171;--nobg:#3d1a1a;--hl:#3a3216}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#172038;--ink:#e8ecf7;--mute:#9aa5c4;--line:#2a3554;--ac:#5eead4;--acbg:#12343a;--ok:#4ade80;--okbg:#12351f;--no:#f87171;--nobg:#3d1a1a;--hl:#3a3216}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 Literata,Georgia,serif}
+h1,h2,h3,button,.nav a{font-family:Sora,system-ui,sans-serif}
+header{padding:20px 20px 12px;max-width:900px;margin:auto}
+header h1{font-size:1.5rem;margin:0 0 4px;line-height:1.25}
+header p{margin:0;color:var(--mute);font-size:.95rem}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.nav div{max-width:900px;margin:auto;display:flex;gap:6px;overflow-x:auto;padding:8px 20px}
+.nav a{flex:none;padding:7px 12px;border-radius:999px;font-size:.82rem;color:var(--mute);cursor:pointer;border:1px solid var(--line);background:var(--card);text-decoration:none}
+.nav a.on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.nav a.done:not(.on)::after{content:" ✓";color:var(--ok)}
+main{max-width:900px;margin:auto;padding:20px}
+h2{font-size:1.4rem;margin:0 0 6px;line-height:1.3}
+.lead{color:var(--mute);margin:0 0 18px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}
+.box h3{margin:0 0 6px;font-size:1rem}
+.box p{margin:6px 0}
+.formula{background:var(--acbg);border-radius:10px;padding:12px 16px;font-size:1.05rem;text-align:center;margin:14px 0;overflow-x:auto}
+.warn{background:var(--hl);border-radius:10px;padding:12px 16px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.grid .box{margin:0}
+table{border-collapse:collapse;margin:10px auto}
+td,th{border:1px solid var(--line);padding:6px 16px;text-align:center}
+th{background:var(--acbg)}
+.bad{background:var(--nobg)}
+button{cursor:pointer;border:1px solid var(--ac);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:8px;font-size:.9rem}
+button.p{background:var(--ac);color:var(--bg)}
+button:focus-visible,.nav a:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.steps li{margin:4px 0}
+details{margin:8px 0}summary{cursor:pointer;color:var(--ac);font-family:Sora,sans-serif;font-size:.9rem}
+.foot{display:flex;justify-content:space-between;margin-top:24px;gap:10px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;font-family:Literata,serif;font-size:1rem;padding:11px 14px;border-color:var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.no{background:var(--nobg);border-color:var(--no)}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--acbg)}
+.score{font:700 3rem Sora,sans-serif;text-align:center;color:var(--ac);margin:8px 0}
+.tf td{cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>Metode Pembuktian</h1>
+<p>Bimbingan OSN Matematika — dari logika, ke strategi, ke bukti yang rapi.</p>
+<div class="bar"><i id="pb"></i></div>
+</header>
+<div class="nav"><div id="nav" role="tablist"></div></div>
+<main id="m" tabindex="-1"></main>
+
+<script>
+const $=s=>document.querySelector(s);
+const MOD=[
+{t:"Mengapa Bukti?",h:()=>`
+<h2>Mengapa pembuktian penting dalam OSN?</h2>
+<p class="lead">Jawaban yang benar tidak cukup. Kita harus menunjukkan mengapa jawaban itu benar.</p>
+<div class="grid">
+<div class="box"><h3>Validitas</h3><p>Contoh numerik hanya menunjukkan pernyataan benar pada beberapa kasus. Bukti menunjukkan kebenaran secara umum.</p></div>
+<div class="box"><h3>Struktur berpikir</h3><p>Bukti melatih kita menyusun asumsi → argumen → kesimpulan tanpa lompatan logika.</p></div>
+<div class="box"><h3>Strategi</h3><p>Soal OSN sulit bukan karena hitungan panjang, tetapi karena belum ditemukan sudut pandang yang tepat.</p></div></div>
+<div class="formula"><b>Bukti = klaim + alasan yang sah + hubungan logis</b></div>
+<div class="box"><h3>Tiga pertanyaan saat membaca soal</h3><p>Apa yang diketahui? Apa yang harus dibuktikan? Jembatan logis apa yang menghubungkan keduanya?</p></div>`},
+
+{t:"Logika Dasar",h:()=>`
+<h2>Pernyataan dan nilai kebenaran</h2>
+<p class="lead">Pembuktian dimulai dari pernyataan yang dapat dinilai benar (B) atau salah (S).</p>
+<div class="box"><h3>Pernyataan (proposisi)</h3><p>Kalimat dengan tepat satu nilai kebenaran. “7 adalah bilangan prima” → Benar. “10 &lt; 3” → Salah.</p></div>
+<div class="grid">
+<div class="box"><h3>Negasi ~p</h3><p>Membalik nilai kebenaran p.</p></div>
+<div class="box"><h3>Konjungsi p ∧ q</h3><p>Benar hanya jika p <i>dan</i> q keduanya benar.</p></div>
+<div class="box"><h3>Disjungsi p ∨ q</h3><p>Salah hanya jika p <i>dan</i> q keduanya salah.</p></div>
+<div class="box"><h3>Implikasi p ⇒ q</h3><p>Salah hanya ketika p benar tetapi q salah.</p></div></div>
+<div class="box"><h3>Coba sendiri: tabel kebenaran</h3>
+<p>Pilih operator, lalu klik nilai p dan q pada tabel untuk membalik (B/S).</p>
+<select id="op" aria-label="Operator" style="padding:6px;font-size:1rem"><option value="imp">p ⇒ q</option><option value="and">p ∧ q</option><option value="or">p ∨ q</option><option value="neg">~p</option></select>
+<div id="tt"></div></div>`,i:()=>{
+const f={imp:(p,q)=>!p||q,and:(p,q)=>p&&q,or:(p,q)=>p||q,neg:(p)=>!p};
+const st={p:true,q:true},L=v=>v?"B":"S";
+const draw=()=>{const o=$("#op").value;$("#tt").innerHTML=`<table class="tf"><tr><th>p</th>${o!="neg"?"<th>q</th>":""}<th>hasil</th></tr><tr><td id="cp">${L(st.p)}</td>${o!="neg"?`<td id="cq">${L(st.q)}</td>`:""}<td><b>${L(f[o](st.p,st.q))}</b></td></tr></table>`;
+$("#cp").onclick=()=>{st.p=!st.p;draw()};if($("#cq"))$("#cq").onclick=()=>{st.q=!st.q;draw()}};
+$("#op").onchange=draw;draw()}},
+
+{t:"Implikasi",h:()=>`
+<h2>Implikasi, konvers, kontraposisi</h2>
+<p class="lead">Titik rawan kesalahan. Pahami tabel kebenaran sebelum memilih metode.</p>
+<div class="formula">p ⇒ q ≡ (~p) ∨ q &nbsp;&nbsp;|&nbsp;&nbsp; p ⇒ q ≡ ~q ⇒ ~p</div>
+<table><tr><th>p</th><th>q</th><th>p ⇒ q</th></tr><tr><td>B</td><td>B</td><td>B</td></tr><tr class="bad"><td>B</td><td>S</td><td>S</td></tr><tr><td>S</td><td>B</td><td>B</td></tr><tr><td>S</td><td>S</td><td>B</td></tr></table>
+<div class="warn"><b>Kunci OSN:</b> untuk membantah p ⇒ q, cukup cari <b>satu</b> kasus p benar dan q salah (counterexample).</div>
+<div class="grid">
+<div class="box"><h3>Implikasi</h3><p>p ⇒ q<br>“Jika p, maka q.”</p></div>
+<div class="box"><h3>Konvers</h3><p>q ⇒ p<br>Tidak selalu ekuivalen dengan p ⇒ q.</p></div>
+<div class="box"><h3>Kontraposisi</h3><p>~q ⇒ ~p<br><b>Selalu</b> ekuivalen dengan p ⇒ q.</p></div></div>
+<div class="box"><h3>Ekuivalensi “jika dan hanya jika”</h3><p>p ⇔ q ≡ (p ⇒ q) ∧ (q ⇒ p). Buktikan <b>dua arah</b>.</p>
+<p>Contoh: n genap ⇔ n² genap. Arah 2 (n² genap ⇒ n genap) sering lebih mudah lewat kontraposisi.</p>
+<p>Kata kunci: “jika dan hanya jika”, “ekuivalen”, “syarat perlu dan cukup”.</p></div>`},
+
+{t:"Langsung",h:()=>`
+<h2>Metode 1 — Pembuktian langsung</h2>
+<p class="lead">Mulai dari fakta yang diketahui, dorong secara logis sampai kesimpulan.</p>
+<div class="formula">Diketahui p → definisi/teorema → manipulasi sah → diperoleh q</div>
+<div class="box"><h3>Contoh: jika a | b dan b | c, maka a | c</h3>
+<ol class="steps"><li>a | b ⇒ ada k ∈ ℤ sehingga b = ak.</li><li>b | c ⇒ ada m ∈ ℤ sehingga c = bm.</li><li>Substitusi: c = (ak)m = a(km).</li><li>Karena km ∈ ℤ, maka a | c. ∎</li></ol></div>
+<div class="warn"><b>Catatan OSN:</b> jangan menulis “jelas” jika justru di situlah argumen pentingnya.</div>`},
+
+{t:"Kontraposisi",h:()=>`
+<h2>Metode 2 — Kontraposisi</h2>
+<p class="lead">Berguna ketika kesimpulan q sulit dibuktikan langsung.</p>
+<div class="formula">p ⇒ q ekuivalen dengan ~q ⇒ ~p</div>
+<div class="box"><h3>Contoh: jika n² genap, maka n genap</h3>
+<p>Kontraposisi: jika n ganjil, maka n² ganjil.</p>
+<ol class="steps"><li>Ambil n = 2k + 1.</li><li>n² = 4k² + 4k + 1 = 2(2k² + 2k) + 1.</li><li>Jadi n² ganjil. Kontraposisi terbukti. ∎</li></ol></div>
+<div class="box"><h3>Kapan dipilih?</h3><p>Jika “q terjadi” terasa sulit, negasikan q dan lihat apakah ~q memaksa ~p.</p></div>`},
+
+{t:"Kontradiksi",h:()=>`
+<h2>Metode 3 — Kontradiksi</h2>
+<p class="lead">Asumsikan kebalikan dari klaim, lalu tunjukkan asumsi itu mustahil.</p>
+<div class="formula">Buktikan P → andaikan ~P → muncul kontradiksi ⊥ → P benar</div>
+<div class="box"><h3>Alur berpikir</h3><ol class="steps"><li>Nyatakan klaim P.</li><li>Asumsikan ~P benar.</li><li>Turunkan konsekuensi logis.</li><li>Temukan A dan ~A, atau sesuatu yang mustahil.</li><li>Simpulkan ~P salah, sehingga P benar.</li></ol></div>
+<div class="warn"><b>Jebakan:</b> kontradiksi bukan sekadar “hasilnya aneh”. Harus ada konflik logis yang jelas dengan fakta, definisi, atau teorema.</div>
+<p>Sering efektif pada masalah eksistensi (“tidak ada”, “mustahil”) dan ekstrem.</p>`},
+
+{t:"Induksi",h:()=>`
+<h2>Metode 4 — Induksi matematika</h2>
+<p class="lead">Untuk pernyataan yang berlaku bagi semua n ∈ ℕ. Bayangkan domino: satu jatuh, lalu tiap kartu memaksa kartu berikutnya jatuh.</p>
+<div class="formula">Basis P(1) + Langkah [P(k) ⇒ P(k+1)] ⇒ P(n) untuk semua n</div>
+<div class="grid">
+<div class="box"><h3>① Basis</h3><p>Buktikan benar untuk nilai awal.</p></div>
+<div class="box"><h3>② Hipotesis</h3><p>Anggap P(k) benar untuk suatu k ≥ n₀.</p></div>
+<div class="box"><h3>③ Langkah induksi</h3><p>Gunakan P(k) untuk membuktikan P(k+1).</p></div></div>
+<div class="box"><h3>Contoh: 1 + 2 + … + n = n(n+1)/2</h3>
+<ol class="steps"><li><b>Basis n=1:</b> 1 = 1·2/2 ✓</li><li><b>Hipotesis:</b> 1+…+k = k(k+1)/2</li><li><b>Langkah:</b> 1+…+k+(k+1) = k(k+1)/2 + (k+1) = (k+1)(k+2)/2 = (k+1)((k+1)+1)/2 → P(k+1). ∎</li></ol></div>
+<div class="warn"><b>Tiga kesalahan umum</b><br>1. Menguji P(1), P(2), P(3) lalu menyimpulkan semua n (itu verifikasi, bukan bukti).<br>2. Tidak menyatakan k dipilih sembarang pada domain yang tepat.<br>3. Diam-diam memakai kesimpulan P(k+1) (circular reasoning).<br><b>Checklist:</b> basis benar? k umum? P(k) dipakai sah? benar-benar sampai P(k+1)?</div>`},
+
+{t:"AM-GM & Strategi",h:()=>`
+<h2>Alat bantu: AM-GM, dan memilih metode</h2>
+<div class="formula">(x + y)/2 ≥ √(xy), x,y ≥ 0. Kesamaan ⇔ x = y</div>
+<div class="box"><h3>Contoh: buktikan x + y ≥ 2√(xy)</h3><p>Target mengandung √(xy), jadi pakai kuadrat selisih:</p>
+<p style="text-align:center">x + y − 2√(xy) = (√x − √y)² ≥ 0. ∎</p><p>Kesamaan saat √x = √y ⇔ x = y.</p></div>
+<div class="box"><h3>Pemilih metode: pilih ciri soal</h3>
+<select id="sel" aria-label="Ciri soal" style="padding:8px;font-size:1rem;max-width:100%">
+<option value="">— pilih ciri soal —</option>
+<option value="0">Klaim punya definisi langsung (divisibilitas, paritas, identitas aljabar)</option>
+<option value="1">Kesimpulan berbentuk negasi, atau lebih mudah setelah dinegasikan</option>
+<option value="2">Ada kata “mustahil” / “tidak ada” / eksistensi</option>
+<option value="3">Ada n, n+1, “untuk semua n” dengan struktur rekursif</option>
+<option value="4">Ada “jika dan hanya jika”</option></select>
+<div class="fb" id="selo" style="display:none"></div></div>
+<p><i>Pelajaran:</i> kenali bentuk target sebelum melakukan aljabar panjang.</p>`,i:()=>{
+const R=["<b>Pembuktian langsung.</b> Mulai dari definisi, manipulasi sah sampai kesimpulan.","<b>Kontraposisi.</b> Buktikan ~q ⇒ ~p.","<b>Kontradiksi.</b> Andaikan kebalikannya, cari konflik logis.","<b>Induksi.</b> Basis + P(k) ⇒ P(k+1). Jangan dipaksakan bila soal tidak rekursif.","<b>Dua implikasi.</b> Pecah menjadi p ⇒ q dan q ⇒ p."];
+$("#sel").onchange=e=>{const o=$("#selo");o.style.display=e.target.value===""?"none":"block";o.innerHTML=R[e.target.value]||""}}},
+
+{t:"Latihan",h:()=>`
+<h2>Latihan dan tantangan OSN</h2>
+<p class="lead">Kerjakan di kertas dulu, baru buka petunjuk. Fokus pada struktur argumen.</p>
+${[
+["Latihan 1A","Diketahui p ⇒ q. Apakah q ⇒ p selalu benar? Berikan counterexample jika tidak.","Tidak selalu. Misal p: “n = 4”, q: “n genap”. p ⇒ q benar, tetapi n = 6 membuat q benar dan p salah."],
+["Latihan 1B","Tuliskan kontraposisi dari “Jika n² habis dibagi 4, maka n genap.”","Jika n ganjil, maka n² tidak habis dibagi 4."],
+["Latihan 1C","Buktikan atau bantah: (p ∧ q) ∨ r ⇔ (p ∨ r) ∧ (q ∨ r).","Benar (hukum distributif). Cek dengan tabel kebenaran 8 baris: kedua sisi selalu bernilai sama."],
+["Latihan 1D","Jelaskan mengapa beberapa contoh numerik bukan bukti umum.","Contoh hanya memeriksa sebagian kasus. Bisa saja ada kasus lain yang tidak dicek, dan satu kasus gagal sudah cukup membantah klaim."],
+["Latihan 2","Buktikan dengan induksi: 1² + 2² + … + n² = n(n+1)(2n+1)/6. Bonus: 1 + 3 + 5 + … + (2n−1) = n².","Basis n=1: 1 = 1·2·3/6. Langkah: k(k+1)(2k+1)/6 + (k+1)² = (k+1)[k(2k+1) + 6(k+1)]/6 = (k+1)(2k²+7k+6)/6 = (k+1)(k+2)(2k+3)/6. Bonus: n² + (2n+1) = (n+1)²."],
+["Latihan 3A","Buktikan: jika n² ganjil, maka n ganjil.","Kontraposisi: jika n genap, n = 2k, maka n² = 4k² = 2(2k²) genap."],
+["Latihan 3C","Buktikan: jika a + b ganjil, maka salah satu dari a, b genap dan yang lain ganjil.","Kontraposisi: jika a, b sama paritas (genap-genap atau ganjil-ganjil), maka a + b genap."],
+["Tantangan OSN","Untuk setiap n ∈ ℕ, buktikan n³ − n habis dibagi 6 (tanpa brute force).","n³ − n = (n−1)n(n+1), hasil kali tiga bilangan berurutan. Di antaranya pasti ada satu genap (faktor 2) dan satu kelipatan 3. Karena 2 dan 3 saling prima, hasil kali habis dibagi 6. ∎"]
+].map(x=>`<div class="box"><h3>${x[0]}</h3><p>${x[1]}</p><details><summary>Lihat petunjuk / pembahasan</summary><p>${x[2]}</p></details></div>`).join("")}`},
+
+{t:"Kuis",h:()=>{if(Q.idx>=Q.list.length)return Q.result();const q=Q.list[Q.idx];return`
+<h2>Kuis: soal ${Q.idx+1} dari ${Q.list.length}</h2>
+<div class="box"><p style="margin-top:0"><b>${q.q}</b></p><div id="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div><div id="fbk"></div></div>`},i:()=>Q.bind()}
+];
+
+const BANK=[
+{q:"Kapan implikasi p ⇒ q bernilai salah?",o:["p benar dan q salah","p salah dan q benar","p dan q keduanya salah","p dan q keduanya benar"],a:0,e:"Implikasi hanya salah ketika p benar tetapi q salah."},
+{q:"Kontraposisi dari “Jika n² habis dibagi 4, maka n genap” adalah …",o:["Jika n ganjil, maka n² tidak habis dibagi 4","Jika n genap, maka n² habis dibagi 4","Jika n² tidak habis dibagi 4, maka n ganjil","Jika n² habis dibagi 4, maka n ganjil"],a:0,e:"Kontraposisi p ⇒ q adalah ~q ⇒ ~p: “tidak genap” = ganjil, “tidak habis dibagi 4”."},
+{q:"Pernyataan yang SELALU ekuivalen dengan p ⇒ q adalah …",o:["q ⇒ p","~p ⇒ ~q","~q ⇒ ~p","p ∧ q"],a:2,e:"Hanya kontraposisi (~q ⇒ ~p) yang selalu ekuivalen. q ⇒ p adalah konvers, ~p ⇒ ~q adalah invers."},
+{q:"Untuk membantah p ⇒ q, yang cukup dilakukan adalah …",o:["Menguji banyak contoh yang benar","Mencari satu kasus p benar dan q salah","Membuktikan konvers","Membuktikan kontraposisi"],a:1,e:"Satu counterexample (p benar, q salah) sudah cukup."},
+{q:"Untuk membuktikan “p jika dan hanya jika q”, kita harus …",o:["Membuktikan p ⇒ q saja","Membuktikan q ⇒ p saja","Membuktikan p ⇒ q dan q ⇒ p","Memberi contoh numerik"],a:2,e:"p ⇔ q ≡ (p ⇒ q) ∧ (q ⇒ p): buktikan kedua arah."},
+{q:"Metode paling natural untuk membuktikan “jika n² genap, maka n genap” adalah …",o:["Kontraposisi","Induksi","Menguji n = 1, 2, 3","Ketaksamaan AM-GM"],a:0,e:"Buktikan: n ganjil ⇒ n² ganjil, yang jauh lebih mudah lewat n = 2k+1."},
+{q:"Langkah pertama pada pembuktian dengan kontradiksi untuk klaim P adalah …",o:["Menguji contoh kecil","Mengasumsikan ~P benar","Membuktikan basis","Membuktikan konvers P"],a:1,e:"Mulai dengan mengandaikan kebalikan klaim (~P), lalu cari konflik logis."},
+{q:"Seseorang memeriksa P(1), P(2), P(3) benar lalu menyimpulkan P(n) benar untuk semua n. Ini …",o:["Bukti induksi yang sah","Bukti langsung","Hanya verifikasi, bukan bukti umum","Bukti kontradiksi"],a:2,e:"Tanpa langkah P(k) ⇒ P(k+1) yang umum, itu hanya pengecekan beberapa kasus."},
+{q:"Pada induksi untuk 1 + 2 + … + n = n(n+1)/2, langkah induksi dilakukan dengan menambahkan … pada kedua ruas P(k).",o:["k","k + 1","2k","(k+1)²"],a:1,e:"Ruas kiri P(k+1) adalah 1+…+k ditambah suku ke-(k+1), yaitu (k+1)."},
+{q:"Kapan kesamaan x + y ≥ 2√(xy) terjadi?",o:["x = 0","y = 0","x = y","x = 2y"],a:2,e:"x + y − 2√(xy) = (√x − √y)² = 0 tepat ketika √x = √y, yaitu x = y."},
+{q:"Pada induksi untuk jumlah kuadrat, k(k+1)(2k+1)/6 + (k+1)² sama dengan …",o:["(k+1)(k+2)(2k+3)/6","(k+1)(k+2)(2k+1)/6","k(k+1)(2k+3)/6","(k+1)²(2k+3)/6"],a:0,e:"Faktorkan (k+1): (k+1)[k(2k+1)+6(k+1)]/6 = (k+1)(2k²+7k+6)/6 = (k+1)(k+2)(2k+3)/6."},
+{q:"Mengapa n³ − n selalu habis dibagi 6?",o:["Karena n³ − n = (n−1)n(n+1), hasil kali tiga bilangan berurutan, yang memuat faktor 2 dan faktor 3","Karena n³ selalu genap","Karena benar untuk n = 1, 2, 3","Karena n³ − n selalu kelipatan 6 dari tabel"],a:0,e:"Tiga bilangan berurutan pasti memuat satu genap dan satu kelipatan 3; 2 dan 3 saling prima."}
+];
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const Q={list:[],idx:0,score:0,wrong:[],
+init(){this.list=shuf(BANK).map(q=>{const c=q.o[q.a],o=shuf(q.o);return{...q,o,a:o.indexOf(c)}});this.idx=0;this.score=0;this.wrong=[]},
+bind(){document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const q=this.list[this.idx],i=+b.dataset.i,ok=i===q.a;
+document.querySelectorAll(".opt").forEach((x,j)=>{x.disabled=true;if(j===q.a)x.classList.add("ok")});
+if(ok)this.score++;else{b.classList.add("no");this.wrong.push(q)}
+$("#fbk").innerHTML=`<div class="fb"><b>${ok?"Benar.":"Belum tepat."}</b> ${q.e}</div><div class="foot"><span></span><button class="p" id="nx">${this.idx+1<this.list.length?"Soal berikutnya":"Lihat hasil"}</button></div>`;
+$("#nx").onclick=()=>{this.idx++;go(MOD.length-1,true)}})},
+result(){const p=Math.round(this.score/this.list.length*100);
+try{const b=+localStorage.getItem("best")||0;if(p>b)localStorage.setItem("best",p)}catch(e){}
+return`<h2>Hasil kuis</h2><div class="box"><div class="score">${p}</div><p style="text-align:center">${this.score} benar dari ${this.list.length} soal. ${p>=80?"Kuat. Coba tantangan pada modul Latihan.":p>=60?"Cukup baik. Ulangi modul pada soal yang salah.":"Baca ulang modul Implikasi dan Induksi, lalu coba lagi."}</p></div>
+${this.wrong.length?`<div class="box"><h3>Soal yang perlu diulang</h3>${this.wrong.map(q=>`<p><b>${q.q}</b><br>${q.e}</p>`).join("")}</div>`:""}
+<div class="foot"><button id="rt">Ulangi kuis (soal diacak)</button></div>`}};
+
+let cur=0;const seen=new Set();
+function go(n,keep){cur=n;seen.add(n);
+if(n===MOD.length-1&&!keep&&Q.idx===0&&!Q.list.length)Q.init();
+$("#m").innerHTML=MOD[n].h()+(n<MOD.length-1?`<div class="foot"><button id="pv" ${n?"":"disabled"}>Sebelumnya</button><button class="p" id="nx2">${n<MOD.length-2?"Berikutnya":"Mulai kuis"}</button></div>`:"");
+if(MOD[n].i)MOD[n].i();
+if($("#pv"))$("#pv").onclick=()=>go(n-1);if($("#nx2"))$("#nx2").onclick=()=>go(n+1);
+if($("#rt"))$("#rt").onclick=()=>{Q.init();go(n,true)};
+document.querySelectorAll("#nav a").forEach((a,i)=>{a.classList.toggle("on",i===n);a.classList.toggle("done",seen.has(i))});
+$("#pb").style.width=Math.round(seen.size/MOD.length*100)+"%";
+if(!keep){window.scrollTo(0,0);document.querySelector("#nav .on")?.scrollIntoView({inline:"center",block:"nearest"})}}
+$("#nav").innerHTML=MOD.map((m,i)=>`<a role="tab" tabindex="0" data-i="${i}">${m.t}</a>`).join("");
+document.querySelectorAll("#nav a").forEach(a=>{a.onclick=()=>go(+a.dataset.i);a.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go(+a.dataset.i)}}});
+go(0);
+</script>
+</body>
+</html>
